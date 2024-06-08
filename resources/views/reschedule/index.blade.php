@@ -27,13 +27,13 @@
                     <a href="dashboard" class="block pb-2 px-3 text-gray-700 rounded md:bg-transparent  md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Dashboard</a>
                 </li>
                 <li>
-                    <a href="presensi" class="block py-2 px-3 text-blue-700 rounded underline underline-offset-[34px] hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Presence</a>
+                    <a href="presensi" class="block py-2 px-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Presence</a>
                 </li>
                 <li>
                     <a href="substitute" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Substitut teacher</a>
                 </li>
                 <li>
-                    <a href="reschedule" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Re-schedule</a>
+                    <a href="reschedule" class="block py-2 px-3 text-blue-700 rounded underline underline-offset-[34px] hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Re-schedule</a>
                 </li>
                 </ul>
             </div>
@@ -71,16 +71,13 @@
         </div>
     @endif
     <div class=" flex flex-col relative top-2 left-[1475px]">
-        <a href="/create-presensi">
+        <a href="/create-reschedule">
             <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,300,150" class="relative bottom-[2px] end-[4px]">
                     <g fill="#fffafa" fill-rule="evenodd" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M11,2v9h-9v2h9v9h2v-9h9v-2h-9v-9z"></path></g></g>
                 </svg>
-                Presence
+                Reschedule
             </button>
-        </a>
-        <a href="create-substitute">
-            <p class="relative left-1 text-blue-700 mt-1 font-weight-bold text-md">Can't teach?</p>
         </a>
     </div>
     <div class="relative top-2 left-[200px] right-50 overflow-x-auto  sm:rounded-lg px-5 py-5 w-10/12">
@@ -101,6 +98,12 @@
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Grade
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Room
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Reason
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Action
@@ -126,8 +129,14 @@
                         {{ $item["grade"] }}
                     </td>
                     <td class="px-6 py-4">
-                        <a href="{{ url('presensi/'.$item['id']) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
-                        <form action="{{ url('presensi/'.$item['id']) }}" method="POST" onsubmit="return confirm('Apakah yakin akan melakukan penghapusan data')" class="inline">
+                        {{ $item["room"] }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $item["reason"] }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <a href="{{ url('reschedule/'.$item['id']) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
+                        <form action="{{ url('reschedule/'.$item['id']) }}" method="POST" onsubmit="return confirm('Apakah yakin akan melakukan penghapusan data')" class="inline">
                         @csrf
                         @method('delete')
                         <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</button>

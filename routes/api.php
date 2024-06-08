@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\PresensiApiController;
+use App\Http\Controllers\Api\RescheduleAPIController;
 use App\Http\Controllers\Api\SubstituteTeacherApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,6 +13,7 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource('presensis', PresensiApiController::class);
 Route::apiResource('substitutes', SubstituteTeacherApiController::class);
+Route::apiResource('reschedules', RescheduleAPIController::class);
 
 // Route::get('presensis', [PresensiApiController::class, 'index']);
 // Route::get('presensis/{id}', [PresensiApiController::class, 'show']);
