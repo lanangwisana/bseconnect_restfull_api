@@ -15,9 +15,9 @@ Route::get('/create-presensi', function () {
     return view('presensi.create');
 });
 
-// Route::get('/edit-presensi/{id}', function () {
-//     return view('presensi.edit');
-// });
+Route::get('/create-substitute', function () {
+    return view('substituteteacher.create');
+});
 
 
 // UI Routes

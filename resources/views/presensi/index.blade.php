@@ -79,7 +79,7 @@
                 Presence
             </button>
         </a>
-        <a href="/resources/views/substituteteacher/index.blade.php">
+        <a href="create-substitute">
             <p class="">Can't teach?</p>
         </a>
     </div>
