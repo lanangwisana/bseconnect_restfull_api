@@ -70,7 +70,7 @@
             </div>
         </div>
     @endif
-    <div class="relative top-2 left-[1475px]">
+    <div class=" flex flex-col relative top-2 left-[1475px]">
         <a href="/create-presensi">
             <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,300,150" class="relative bottom-[2px] end-[4px]">
@@ -78,6 +78,9 @@
                 </svg>
                 Presence
             </button>
+        </a>
+        <a href="/resources/views/substituteteacher/index.blade.php">
+            <p class="">Can't teach?</p>
         </a>
     </div>
     <div class="relative top-2 left-[200px] right-50 overflow-x-auto  sm:rounded-lg px-5 py-5 w-10/12">
