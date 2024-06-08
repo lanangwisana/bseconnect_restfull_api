@@ -109,7 +109,6 @@ class SubstituteTeacherApiController extends Controller
         $datasubstitute->name = $request->name;
         $datasubstitute->subject = $request->subject;
         $datasubstitute->date = $request->date;
-        $datasubstitute->topic = $request->topic;
         $datasubstitute->grade = $request->grade;
 
         $post = $datasubstitute->save();
