@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>BSEConnect</title>
 </head>
 <body class="bg-gray-100 overflow-hidden">
@@ -107,35 +108,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($data as $item)
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td class="px-6 py-4">
-                        {{ $item["name"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["subject"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["date"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["topic"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["grade"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <a href="{{ url('presensi/'.$item['id']) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
-                        <form action="{{ url('presensi/'.$item['id']) }}" method="POST" onsubmit="return confirm('Apakah yakin akan melakukan penghapusan data')" class="inline">
-                        @csrf
-                        @method('delete')
-                        <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</button>
-                        </form>
-                        
-                    </td>
-                </tr>
-                @endforeach
+            <tbody id="data-body"> 
             </tbody>
         </table>
         <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
@@ -164,6 +137,47 @@
                 </li>
             </ul>
         </nav>
-    </div>        
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            fetchData();
+    
+            function fetchData() {
+                $.ajax({
+                    url: 'http://localhost:8000/api/presensis', // URL API
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        let rows = '';
+                        // Perbaikan: forEach bukan foreEach
+                        response.data.forEach(item => {
+                            rows += `
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td class="px-6 py-4">${item.name}</td>
+                                    <td class="px-6 py-4">${item.subject}</td>
+                                    <td class="px-6 py-4">${item.date}</td>
+                                    <td class="px-6 py-4">${item.topic}</td>
+                                    <td class="px-6 py-4">${item.grade}</td>
+                                    <td class="px-6 py-4">
+                                        <a href="/presensi/${item.id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
+                                        <form action="/presensi/${item.id}" method="POST" onsubmit="return confirm('Apakah yakin akan melakukan penghapusan data')" class="inline">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                        $('#data-body').html(rows);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching data:', error);
+                    }
+                });
+            }
+        });
+    </script>           
 </body>
 </html>
