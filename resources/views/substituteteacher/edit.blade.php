@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -46,35 +47,80 @@
             </a>
             <h2>Substitute Teacher</h2>
         </div>
-        <form action="" method="POST" enctype="multipart/form-data" class="mt-24">
-            @csrf
-            @method('PUT')
+        <form id="editForm" class="mt-24">
+            <input type="hidden" id="presensiId" name="presensiId" value="{{ $id }}">
             <div class="relative left-[230px] mb-5 w-2/6">
-                <label for="base-input" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Name</label>
-                <input type="text" id="base-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your name..." name="name" value="{{ $data['name'] }}">
+                <label for="name" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Name</label>
+                <input type="text" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your name..." name="name">
             </div>
             <div class="relative left-[230px] mb-5 w-2/6">
-                <label for="base-input" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Subject</label>
-                <input type="text" id="base-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your subject..." name="subject" value="{{ $data['subject'] }}">
+                <label for="subject" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Subject</label>
+                <input type="text" id="subject" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your subject..." name="subject">
             </div>
             <div class="relative left-[230px] max-w-sm mb-5 w-2/6">
-                <label for="base-input" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Date</label>
+                <label for="subject" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Date</label>
                 <div class="relative max-w-sm">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V4ZM2 6h16v3H2V6Zm2 11v-7h2v7H4Zm4 0v-7h4v7H8Zm8 0h-2v-7h2v7Z"/>
                         </svg>
                     </div>
-                    <input datepicker datepicker-format="yyyy/mm/dd" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date" name="date" value="{{ $data['date'] }}">
+                    <input datepicker datepicker-autohide type="text" id="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date" name="date">
                 </div>
             </div>
             <div class="relative left-[230px] mb-5 w-2/6">
-                <label for="base-input" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Grade</label>
-                <input type="text" id="base-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Use roman numerals..." name="grade" value="{{ $data['grade'] }}">
+                <label for="grade" class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Grade</label>
+                <input type="text" id="grade" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter your grade..." name="grade">
             </div>
-            <button type="submit" class="text-white bg-blue-700 relative left-[230px] mb-5 w-2/6 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Submit</button>
-        </form> 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
+            <div class="relative left-[230px] mb-5 w-2/6">
+                <button type="submit" class="w-full px-4 py-2 text-base font-medium text-center text-white transition duration-500 ease-in transform bg-blue-600 shadow-md lg:w-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded">Save</button>
+            </div>
+        </form>
+        
+        <script>
+            $(document).ready(function() {
+                let id = {{ $id }};
+                $.ajax({
+                    url: `http://127.0.0.1:8000/api/substitutes/${id}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log('Data presensi:', response.data); // Debugging line
+                        if (response.data) {
+                            $('#name').val(response.data.name);
+                            $('#subject').val(response.data.subject);
+                            $('#date').val(response.data.date);
+                            $('#grade').val(response.data.grade);
+                        } else {
+                            alert('Data tidak ditemukan.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching data:', status, error); // Debugging line
+                        alert('Gagal memuat data. Silakan periksa koneksi internet Anda atau hubungi administrator.');
+                    }
+                });
+        
+                $('#editForm').submit(function(e) {
+                    e.preventDefault();
+                    let url = `http://127.0.0.1:8000/api/substitutes/${id}`;
+                    let method = 'PUT';
+        
+                    $.ajax({
+                        url: url,
+                        type: method,
+                        dataType: 'json',
+                        data: $(this).serialize(),
+                        success: function(response) {
+                            alert('Data berhasil disimpan!');
+                            window.location.href = '/substitute';
+                        },
+                        error: function(xhr) {
+                            alert('Gagal menyimpan data.');
+                        }
+                    });
+                });
+            });
+        </script>  
 </body>
 </html>

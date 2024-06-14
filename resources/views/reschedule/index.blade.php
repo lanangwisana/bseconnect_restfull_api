@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>BSEConnect</title>
 </head>
 <body class="bg-gray-100 overflow-hidden">
@@ -72,7 +73,7 @@
     @endif
     <div class=" flex flex-col relative top-2 left-[1475px]">
         <a href="/create-reschedule">
-            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button id="rescheduleButton" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,300,150" class="relative bottom-[2px] end-[4px]">
                     <g fill="#fffafa" fill-rule="evenodd" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M11,2v9h-9v2h9v9h2v-9h9v-2h-9v-9z"></path></g></g>
                 </svg>
@@ -110,41 +111,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($data as $item)
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td class="px-6 py-4">
-                        {{ $item["name"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["subject"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["date"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["topic"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["grade"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["room"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["reason"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <a href="{{ url('reschedule/'.$item['id']) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
-                        <form action="{{ url('reschedule/'.$item['id']) }}" method="POST" onsubmit="return confirm('Apakah yakin akan melakukan penghapusan data')" class="inline">
-                        @csrf
-                        @method('delete')
-                        <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</button>
-                        </form>
-                        
-                    </td>
-                </tr>
-                @endforeach
+            <tbody id="reschedule-data-body">
             </tbody>
         </table>
         <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
@@ -173,6 +140,107 @@
                 </li>
             </ul>
         </nav>
-    </div>        
+    </div>  
+        {{-- Untuk button create --}}
+        <script>
+            document.getElementById('rescheduleButton').addEventListener('click', function() {
+                fetch('/create-reschedule', 
+                {
+                    method: 'GET'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Permintaan berhasil
+                        console.log('Response:', response);
+                        // Arahkan ke halaman create-presensi
+                        window.location.href = '/create-reschedule';
+                    } else {
+                        // Jika server mengembalikan status selain 200-299
+                        console.error('Server error:', response.status, response.statusText);
+                        // Tetap mengarahkan ke halaman create-presensi
+                        window.location.href = '/create-reschedule';
+                    }
+                })
+                .catch(error => {
+                    // Ada kesalahan dalam melakukan permintaan
+                    console.error('Request failed', error);
+                    // Tetap mengarahkan ke halaman create-presensi
+                    window.location.href = '/create-reschedule';
+                });
+            });
+        </script>
+
+        {{-- Untuk read data pada table --}}
+        <script>
+            $(document).ready(function() {
+                fetchData();
+                function fetchData() {
+                    $.ajax({
+                        url: 'http://localhost:8000/api/reschedules', // URL API
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function(response) { 
+                            let rows = '';
+                            // Perbaikan: forEach bukan foreEach
+                            response.data.forEach(item => {
+                                rows += `
+                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <td class="px-6 py-4">${item.name}</td>
+                                        <td class="px-6 py-4">${item.subject}</td>
+                                        <td class="px-6 py-4">${item.date}</td>
+                                        <td class="px-6 py-4">${item.topic}</td>
+                                        <td class="px-6 py-4">${item.grade}</td>
+                                        <td class="px-6 py-4">${item.room}</td>
+                                        <td class="px-6 py-4">${item.reason}</td>
+                                        <td class="px-6 py-4">
+                                            <a href="reschedule/${item.id}/edit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
+                                            <button type="button" class="deleteRescheduleBtn font-medium text-blue-600 dark:text-blue-500 hover:underline" data-id="${item.id}">Delete</button>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                            $('#reschedule-data-body').html(rows);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching data:', error);
+                        }
+                    });
+                }
+            });
+        </script>
+        {{-- Untuk button delet --}}
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.deleteRescheduleBtn', function() {
+                let id = $(this).data('id');
+                
+                if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                    $.ajax({
+                        url: `http://127.0.0.1:8000/api/reschedules/${id}`,
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            $('#alert-container').html(`
+                                <div class="alert alert-success">
+                                    ${response.message}
+                                </div>
+                            `);
+                            loadData(); // Function to reload data after delete
+                        },
+                        error: function() {
+                            $('#alert-container').html(`
+                                <div class="alert alert-danger">
+                                    Gagal menghapus data.
+                                </div>
+                            `);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

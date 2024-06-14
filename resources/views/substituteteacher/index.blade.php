@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -90,32 +91,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($data as $item)
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td class="px-6 py-4">
-                        {{ $item["name"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["subject"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["date"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $item["grade"] }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <a href="{{ url('substitute/'.$item['id']) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
-                        <form action="{{ url('substitute/'.$item['id']) }}" method="POST" onsubmit="return confirm('Apakah yakin akan melakukan penghapusan data')" class="inline">
-                        @csrf
-                        @method('delete')
-                        <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</button>
-                        </form>
-                        
-                    </td>
-                </tr>
-                @endforeach
+            <tbody id="substitute-data-body">
             </tbody>
         </table>
         <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
@@ -144,6 +120,76 @@
                 </li>
             </ul>
         </nav>
-    </div>   
+    </div> 
+    {{-- Untuk read data pada table --}}
+    <script>
+        $(document).ready(function() {
+            fetchData();
+            function fetchData() {
+                $.ajax({
+                    url: 'http://localhost:8000/api/substitutes', // URL API
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) { 
+                        let rows = '';
+                        // Perbaikan: forEach bukan foreEach
+                        response.data.forEach(item => {
+                            rows += `
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td class="px-6 py-4">${item.name}</td>
+                                    <td class="px-6 py-4">${item.subject}</td>
+                                    <td class="px-6 py-4">${item.date}</td>
+                                    <td class="px-6 py-4">${item.grade}</td>
+                                    <td class="px-6 py-4">
+                                        <a href="substitute/${item.id}/edit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
+                                        <button type="button" class="deleteSubstituteBtn font-medium text-blue-600 dark:text-blue-500 hover:underline" data-id="${item.id}">Delete</button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                        $('#substitute-data-body').html(rows);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching data:', error);
+                    }
+                });
+            }
+        });
+    </script>
+
+        {{-- Untuk button delet --}}
+        <script>
+            $(document).ready(function() {
+                $(document).on('click', '.deleteSubstituteBtn', function() {
+                    let id = $(this).data('id');
+                    
+                    if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                        $.ajax({
+                            url: `http://127.0.0.1:8000/api/substitutes/${id}`,
+                            type: 'DELETE',
+                            dataType: 'json',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                $('#alert-container').html(`
+                                    <div class="alert alert-success">
+                                        ${response.message}
+                                    </div>
+                                `);
+                                loadData(); // Function to reload data after delete
+                            },
+                            error: function() {
+                                $('#alert-container').html(`
+                                    <div class="alert alert-danger">
+                                        Gagal menghapus data.
+                                    </div>
+                                `);
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
 </body>
 </html>

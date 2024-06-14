@@ -72,17 +72,13 @@
         </div>
     @endif
     <div class=" flex flex-col relative top-2 left-[1475px]">
-        <a href="/create-presensi">
-            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,300,150" class="relative bottom-[2px] end-[4px]">
-                    <g fill="#fffafa" fill-rule="evenodd" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M11,2v9h-9v2h9v9h2v-9h9v-2h-9v-9z"></path></g></g>
-                </svg>
-                Presence
-            </button>
-        </a>
-        <a href="create-substitute">
-            <p class="relative left-1 text-blue-700 mt-1 font-weight-bold text-md">Can't teach?</p>
-        </a>
+        <button id="presenceButton" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 w-[120px] dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,300,150" class="relative bottom-[2px] end-[4px]">
+                <g fill="#fffafa" fill-rule="evenodd" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M11,2v9h-9v2h9v9h2v-9h9v-2h-9v-9z"></path></g></g>
+            </svg>
+            Presence
+        </button>
+        <p id="substituteButton" class="relative left-1 text-blue-700 mt-1 font-weight-bold text-md">Can't teach?</p>
     </div>
     <div class="relative top-2 left-[200px] right-50 overflow-x-auto  sm:rounded-lg px-5 py-5 w-10/12">
         <table class=" w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -139,6 +135,65 @@
         </nav>
     </div>
 
+    {{-- Untuk button create --}}
+    <script>
+        document.getElementById('presenceButton').addEventListener('click', function() {
+            fetch('/create-presensi', 
+            {
+                method: 'GET'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Permintaan berhasil
+                    console.log('Response:', response);
+                    // Arahkan ke halaman create-presensi
+                    window.location.href = '/create-presensi';
+                } else {
+                    // Jika server mengembalikan status selain 200-299
+                    console.error('Server error:', response.status, response.statusText);
+                    // Tetap mengarahkan ke halaman create-presensi
+                    window.location.href = '/create-presensi';
+                }
+            })
+            .catch(error => {
+                // Ada kesalahan dalam melakukan permintaan
+                console.error('Request failed', error);
+                // Tetap mengarahkan ke halaman create-presensi
+                window.location.href = '/create-presensi';
+            });
+        });
+    </script>
+
+    {{-- Untuk button substitute --}}
+    <script>
+        document.getElementById('substituteButton').addEventListener('click', function() {
+            fetch('/create-substitute', 
+            {
+                method: 'GET'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Permintaan berhasil
+                    console.log('Response:', response);
+                    // Arahkan ke halaman create-presensi
+                    window.location.href = '/create-substitute';
+                } else {
+                    // Jika server mengembalikan status selain 200-299
+                    console.error('Server error:', response.status, response.statusText);
+                    // Tetap mengarahkan ke halaman create-presensi
+                    window.location.href = '/create-substitute';
+                }
+            })
+            .catch(error => {
+                // Ada kesalahan dalam melakukan permintaan
+                console.error('Request failed', error);
+                // Tetap mengarahkan ke halaman create-presensi
+                window.location.href = '/create-presensi';
+            });
+        });
+    </script>
+
+    {{-- Untuk read data pada table --}}
     <script>
         $(document).ready(function() {
             fetchData();
@@ -148,7 +203,7 @@
                     url: 'http://localhost:8000/api/presensis', // URL API
                     method: 'GET',
                     dataType: 'json',
-                    success: function(response) {
+                    success: function(response) { 
                         let rows = '';
                         // Perbaikan: forEach bukan foreEach
                         response.data.forEach(item => {
@@ -160,12 +215,8 @@
                                     <td class="px-6 py-4">${item.topic}</td>
                                     <td class="px-6 py-4">${item.grade}</td>
                                     <td class="px-6 py-4">
-                                        <a href="/presensi/${item.id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
-                                        <form action="/presensi/${item.id}" method="POST" onsubmit="return confirm('Apakah yakin akan melakukan penghapusan data')" class="inline">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</button>
-                                        </form>
+                                        <a href="presensi/${item.id}/edit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit |</a>
+                                        <button type="button" class="deletePresensiBtn font-medium text-blue-600 dark:text-blue-500 hover:underline" data-id="${item.id}">Delete</button>
                                     </td>
                                 </tr>
                             `;
@@ -178,6 +229,41 @@
                 });
             }
         });
-    </script>           
+    </script>     
+    
+    {{-- Untuk button delet --}}
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.deletePresensiBtn', function() {
+                let id = $(this).data('id');
+                
+                if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                    $.ajax({
+                        url: `http://127.0.0.1:8000/api/presensis/${id}`,
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            $('#alert-container').html(`
+                                <div class="alert alert-success">
+                                    ${response.message}
+                                </div>
+                            `);
+                            loadData(); // Function to reload data after delete
+                        },
+                        error: function() {
+                            $('#alert-container').html(`
+                                <div class="alert alert-danger">
+                                    Gagal menghapus data.
+                                </div>
+                            `);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
